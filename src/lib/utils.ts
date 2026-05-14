@@ -12,11 +12,18 @@ export function formatCredits(credits: number) {
 
 export function formatDateTime(value: string | null) {
   if (!value) return "Never";
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
+  const date = new Date(value);
+  const pad = (part: number) => part.toString().padStart(2, "0");
+  const datePart = [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate()),
+  ].join("-");
+  const timePart = [
+    pad(date.getHours()),
+    pad(date.getMinutes()),
+    pad(date.getSeconds()),
+  ].join(":");
+
+  return `${datePart} ${timePart}`;
 }

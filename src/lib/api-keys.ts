@@ -11,6 +11,7 @@ export type ApiKeyListItem = {
   id: string;
   name: string;
   purpose: string;
+  keyValue: string | null;
   keyPrefix: string;
   status: string;
   createdAt: string;
@@ -56,6 +57,7 @@ function serializeApiKey(row: typeof apiKeys.$inferSelect): ApiKeyListItem {
     id: row.id,
     name: row.name,
     purpose: row.purpose,
+    keyValue: row.keyValue,
     keyPrefix: row.keyPrefix,
     status: row.status,
     createdAt: row.createdAt.toISOString(),
@@ -100,6 +102,7 @@ export async function createUserApiKey(
     name: normalizeName(input.name),
     purpose: normalizePurpose(input.purpose),
     keyHash: await hashApiKey(value),
+    keyValue: value,
     keyPrefix: value.slice(0, KEY_VISIBLE_PREFIX_LENGTH),
     status: "active",
     lastUsedAt: null,

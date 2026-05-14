@@ -99,6 +99,7 @@ export const apiKeys = sqliteTable(
     name: text("name").notNull(),
     purpose: text("purpose").notNull().default("both"),
     keyHash: text("key_hash").notNull().unique(),
+    keyValue: text("key_value"),
     keyPrefix: text("key_prefix").notNull(),
     status: text("status").notNull().default("active"),
     lastUsedAt: integer("last_used_at", { mode: "timestamp" }),

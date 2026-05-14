@@ -172,7 +172,7 @@ export function DashboardTabs({
 }: DashboardTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("consumer");
   const activeKey = apiKeys.find((key) => key.status === "active");
-  const activeKeyValue = activeKey ? `${activeKey.keyPrefix}...` : null;
+  const activeKeyValue = activeKey?.keyValue ?? null;
 
   const consumerConfig = useMemo(
     () => buildConsumerConfig({ publicAppUrl, apiKey: activeKeyValue }),
@@ -233,29 +233,24 @@ export function DashboardTabs({
                 Consumer configuration
               </div>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-                Use this configuration in OpenAI-compatible clients. Create an API key in
-                Settings to replace the visible prefix placeholder with a full key.
+                Use this configuration in OpenAI-compatible clients. Create a new API key
+                in Settings if the active key is from before full-key storage was enabled.
               </p>
             </div>
             <CopyButton
               label="Copy all"
               value={[
-                `Endpoint: ${consumerConfig.endpoint}`,
-                `API key: ${consumerConfig.apiKey}`,
-                `Model: ${consumerConfig.model}`,
-                "",
-                consumerConfig.env,
-                "",
                 consumerConfig.codexConfig,
+                "",
+                consumerConfig.curl,
+                "",
+                consumerConfig.streamCurl,
+                "",
+                consumerConfig.statusCurl,
+                "",
+                consumerConfig.modelsCurl,
               ].join("\n")}
             />
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <ConfigBlock title="Endpoint" value={consumerConfig.endpoint} />
-            <ConfigBlock title="API key" value={consumerConfig.apiKey} />
-            <ConfigBlock title="Model" value={consumerConfig.model} />
-            <ConfigBlock title="Environment" value={consumerConfig.env} />
           </div>
 
           <ConfigBlock title="Codex config.toml" value={consumerConfig.codexConfig} />

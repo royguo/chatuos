@@ -421,6 +421,8 @@ consumer_api_keys(
   id,
   user_id,
   key_hash,
+  key_value,
+  key_prefix,
   status,
   created_at
 )
@@ -543,7 +545,7 @@ Dashboard 分为三个卡片/视图：
 
 1. Consumer
    - 展示用户专属 GPT 配置。
-   - 包括平台 endpoint、API key、model、环境变量和 cURL 示例。
+   - 包括 Codex config、Responses cURL、Streaming cURL、Status cURL 和 Models cURL 示例。
    - 支持一键复制配置。
 
 2. Contributor
@@ -609,8 +611,8 @@ users.id
 
 API key 设计：
 
-- key 明文只在创建时展示一次。
-- 数据库只保存 SHA-256 hash 和可见 prefix。
+- key 使用 SHA-256 hash 鉴权，并保存可见 prefix。
+- 当前 MVP 为了支持控制台加载后完整复制 key，数据库同时保存完整 key 明文；后续应改为加密存储。
 - key 默认统一可用，不在控制台暴露 purpose 选择。
 - Consumer 和 Contributor worker 均使用 `Authorization: Bearer <key>`。
 
