@@ -548,9 +548,9 @@ Dashboard 分为三个卡片/视图：
 
 2. Contributor
    - 展示贡献者 worker 配置。
-   - 展示 active profiles、用户 ID、平台 endpoint、worker key、安装脚本、配置文件和 worker 启动命令。
-   - 提供一键 worker installer 脚本。
-   - 用户可以在本地 `plans.json` 中配置一个或多个 Codex 账户共享计划。
+   - 展示 active profiles，以及分步骤的 worker install、worker config file、worker command。
+   - 安装命令和配置文件内嵌平台 endpoint、用户 ID 和 worker key 占位符，不单独作为页面章节展示。
+   - 用户可以在本地 worker config 中配置一个或多个 Codex 账户共享计划。
 
 3. Settings
    - 显示唯一用户 ID。

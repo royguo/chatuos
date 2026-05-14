@@ -63,6 +63,47 @@ function ConfigBlock({
   );
 }
 
+function WorkerStepBlock({
+  step,
+  icon: Icon,
+  title,
+  description,
+  value,
+  compact = false,
+}: {
+  step: string;
+  icon: typeof User;
+  title: string;
+  description: string;
+  value: string;
+  compact?: boolean;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
+            <Icon className="h-4 w-4 text-accent" />
+            {step}
+          </div>
+          <p className="mt-2 text-sm font-medium text-foreground">{title}</p>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
+            {description}
+          </p>
+        </div>
+        <CopyButton value={value} />
+      </div>
+      <pre
+        className={`mt-3 whitespace-pre-wrap break-words font-mono leading-6 text-foreground ${
+          compact ? "text-xs" : "text-sm"
+        }`}
+      >
+        {value}
+      </pre>
+    </div>
+  );
+}
+
 function ActiveProfiles({ profiles }: { profiles: WorkerProfileListItem[] }) {
   return (
     <div className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
@@ -240,34 +281,28 @@ export function DashboardTabs({
             </div>
 
             <div className="space-y-4">
-              <ConfigBlock title="Platform endpoint" value={workerConfig.endpoint} />
-              <ConfigBlock title="User ID" value={workerConfig.userId} />
-              <ConfigBlock title="Worker key" value={workerConfig.apiKey} />
-              <div className="rounded-xl border border-border bg-background p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
-                    <Terminal className="h-4 w-4 text-accent" />
-                    Worker install
-                  </div>
-                  <CopyButton value={workerConfig.installCommand} />
-                </div>
-                <pre className="mt-3 whitespace-pre-wrap break-words font-mono text-sm leading-6 text-foreground">
-                  {workerConfig.installCommand}
-                </pre>
-              </div>
-              <div className="rounded-xl border border-border bg-background p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
-                    <FileJson className="h-4 w-4 text-accent" />
-                    Worker config file
-                  </div>
-                  <CopyButton value={workerConfig.configJson} />
-                </div>
-                <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-foreground">
-                  {workerConfig.configJson}
-                </pre>
-              </div>
-              <ConfigBlock title="Worker command" value={workerConfig.command} />
+              <WorkerStepBlock
+                step="Step 1"
+                icon={Terminal}
+                title="Worker install"
+                description="Run this once on the contributor machine. Replace paste-full-api-key with the full API key copied immediately after creation in Settings."
+                value={workerConfig.installCommand}
+              />
+              <WorkerStepBlock
+                step="Step 2"
+                icon={FileJson}
+                title="Worker config file"
+                description="The installer writes this JSON to the local worker config directory. Add or edit profiles here; each profile should point to its own codex_home."
+                value={workerConfig.configJson}
+                compact
+              />
+              <WorkerStepBlock
+                step="Step 3"
+                icon={Terminal}
+                title="Worker command"
+                description="Start the contributor worker after the config file is ready. Keep this process running so profiles can poll for jobs and report activity."
+                value={workerConfig.command}
+              />
             </div>
 
             <div className="rounded-xl border border-border bg-background p-4">
