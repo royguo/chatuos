@@ -35,6 +35,7 @@ export function buildWorkerConfig(input: {
   apiKey: string | null;
 }) {
   const apiKey = "paste-full-api-key";
+  const configPath = "~/.chatuos/settings.json";
   const config = {
     endpoint: input.publicAppUrl,
     user_id: input.userId,
@@ -70,9 +71,7 @@ export function buildWorkerConfig(input: {
     configJson: JSON.stringify(config, null, 2),
     command: [
       "python -m codex_share_worker \\",
-      `  --endpoint ${input.publicAppUrl} \\`,
-      `  --worker-key ${apiKey} \\`,
-      "  --plans ./plans.json",
+      `  --configs ${configPath}`,
     ].join("\n"),
   };
 }

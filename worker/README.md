@@ -10,15 +10,16 @@ HTTP polling for the MVP. A WebSocket transport can be added later.
 
 ```bash
 python -m codex_share_worker \
-  --endpoint https://your-platform.example \
-  --worker-key chatuos_your_full_key \
-  --plans ./plans.example.json
+  --configs ~/.chatuos/settings.json
 ```
 
 The worker never uploads Codex credentials. Each plan chooses a local
 `codex_home`, workspace root, model, and concurrency cap.
 
-## Plan file
+## Config file
+
+The default config path is `~/.chatuos/settings.json`. You can point the worker
+at another file with `--configs /path/to/settings.json`.
 
 ```json
 {

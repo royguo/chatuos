@@ -4,10 +4,10 @@
   "worker_key": "paste-full-api-key-here",
   "plans": [
     {
-      "name": "default-codex-plan",
+      "name": "default-codex",
       "model": "gpt-5.3-codex",
       "codex_home": "~/.codex",
-      "workspace_root": "~/.chatuos/jobs",
+      "workspace_root": "~/.chatuos/jobs/default-codex",
       "max_concurrency": 1
     }
   ]

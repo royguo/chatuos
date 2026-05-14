@@ -8,10 +8,21 @@ from .client import PlatformClient
 from .codex_runner import CodexRunner
 from .config import WorkerConfig, load_config
 
+DEFAULT_CONFIG_PATH = "~/.chatuos/settings.json"
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="ChatUOS contributor worker")
-    parser.add_argument("--plans", default="plans.json", help="Path to plans JSON")
+    parser.add_argument(
+        "--configs",
+        default=DEFAULT_CONFIG_PATH,
+        help="Path to ChatUOS worker JSON config",
+    )
+    parser.add_argument(
+        "--plans",
+        dest="legacy_plans",
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument("--endpoint", help="Override platform endpoint")
     parser.add_argument("--worker-key", help="Override worker API key")
     parser.add_argument("--poll-interval", type=float, default=5.0)
@@ -30,7 +41,8 @@ def find_plan(config: WorkerConfig, job: dict[str, Any]):
 
 def main() -> None:
     args = parse_args()
-    config = load_config(args.plans, args.endpoint, args.worker_key)
+    config_path = args.legacy_plans or args.configs
+    config = load_config(config_path, args.endpoint, args.worker_key)
     client = PlatformClient(config.endpoint, config.worker_key)
 
     print(f"worker connected to {config.endpoint}")

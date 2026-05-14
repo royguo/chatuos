@@ -9,12 +9,16 @@ set -euo pipefail
 : "\${CHATUOS_USER_ID:?Set CHATUOS_USER_ID to your dashboard user id}"
 : "\${CHATUOS_WORKER_KEY:?Set CHATUOS_WORKER_KEY to your full ChatUOS API key}"
 
-CONFIG_DIR="\${CHATUOS_WORKER_DIR:-$HOME/.chatuos/worker}"
+CONFIG_PATH="\${CHATUOS_CONFIG_PATH:-$HOME/.chatuos/settings.json}"
+if [[ "$CONFIG_PATH" == "~/"* ]]; then
+  CONFIG_PATH="$HOME/\${CONFIG_PATH:2}"
+fi
+CONFIG_DIR="$(dirname "$CONFIG_PATH")"
 mkdir -p "$CONFIG_DIR"
 
 python3 -m pip install --user --upgrade "git+https://github.com/royguo/chatuos.git#subdirectory=worker"
 
-cat > "$CONFIG_DIR/plans.json" <<JSON
+cat > "$CONFIG_PATH" <<JSON
 {
   "endpoint": "${endpoint}",
   "user_id": "\${CHATUOS_USER_ID}",
@@ -32,9 +36,9 @@ cat > "$CONFIG_DIR/plans.json" <<JSON
 JSON
 
 echo "ChatUOS worker installed."
-echo "Config: $CONFIG_DIR/plans.json"
+echo "Config: $CONFIG_PATH"
 echo "Start worker:"
-echo "python3 -m codex_share_worker --plans $CONFIG_DIR/plans.json"
+echo "python3 -m codex_share_worker --configs $CONFIG_PATH"
 `;
 
   return new Response(script, {

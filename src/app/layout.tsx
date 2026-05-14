@@ -8,6 +8,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "ChatUOS",
   description: "A Codex and GPT capacity sharing dashboard.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export const dynamic = "force-dynamic";

@@ -44,13 +44,13 @@ def _expand_path(value: str) -> str:
 
 
 def load_config(path: str, endpoint: str | None, worker_key: str | None) -> WorkerConfig:
-    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    raw = json.loads(Path(path).expanduser().read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
-        raise ValueError("Plan file must contain a JSON object")
+        raise ValueError("Config file must contain a JSON object")
 
     plans_raw = raw.get("plans")
     if not isinstance(plans_raw, list) or not plans_raw:
-        raise ValueError("Plan file must contain at least one plan")
+        raise ValueError("Config file must contain at least one plan")
 
     plans: list[WorkerPlan] = []
     for item in plans_raw:

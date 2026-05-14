@@ -296,7 +296,7 @@ export function DashboardTabs({
                 step="Step 2"
                 icon={FileJson}
                 title="Worker config file"
-                description="The installer writes this JSON to the local worker config directory. Add or edit profiles here; each profile should point to its own codex_home."
+                description="Default path: ~/.chatuos/settings.json. The installer writes this JSON there by default. Add or edit profiles here; each profile should point to its own codex_home."
                 value={workerConfig.configJson}
                 compact
               />
@@ -304,7 +304,7 @@ export function DashboardTabs({
                 step="Step 3"
                 icon={Terminal}
                 title="Worker command"
-                description="Start the contributor worker after the config file is ready. Keep this process running so profiles can poll for jobs and report activity."
+                description="Start the contributor worker with --configs pointing to the settings file from Step 2. The default is ~/.chatuos/settings.json, and you can change it to another config path."
                 value={workerConfig.command}
               />
             </div>

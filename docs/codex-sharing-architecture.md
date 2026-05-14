@@ -576,6 +576,7 @@ src/app/api/worker/poll/route.ts         # Worker polling scaffold
 src/app/api/worker/events/route.ts       # Worker event ingestion scaffold
 src/lib/worker-profiles.ts               # Active worker profile tracking
 worker/                                 # Python contributor worker
+worker-design/                          # Worker implementation plan
 ```
 
 ## 13. Web 数据模型
@@ -640,16 +641,16 @@ installer 会：
 
 - 写入平台 endpoint。
 - 写入用户 ID 和 API key。
-- 生成 `plans.json` 模板。
+- 默认写入 `~/.chatuos/settings.json` 配置模板。
 - 安装 `worker/` Python 包。
-- 提示 worker 启动命令。
+- 提示 `--configs ~/.chatuos/settings.json` worker 启动命令。
 
 本地 worker 使用 Python，目录：
 
 ```text
 worker/
   pyproject.toml
-  plans.example.json
+  settings.example.json
   codex_share_worker/
     __main__.py
     client.py
