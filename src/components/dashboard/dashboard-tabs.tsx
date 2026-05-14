@@ -245,6 +245,8 @@ export function DashboardTabs({
                 `Model: ${consumerConfig.model}`,
                 "",
                 consumerConfig.env,
+                "",
+                consumerConfig.codexConfig,
               ].join("\n")}
             />
           </div>
@@ -256,14 +258,22 @@ export function DashboardTabs({
             <ConfigBlock title="Environment" value={consumerConfig.env} />
           </div>
 
+          <ConfigBlock title="Codex config.toml" value={consumerConfig.codexConfig} />
+
           <div className="rounded-xl border border-border bg-background p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <p className="text-xs uppercase text-muted-light">cURL</p>
+              <p className="text-xs uppercase text-muted-light">Responses cURL</p>
               <CopyButton value={consumerConfig.curl} />
             </div>
             <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-6 text-foreground">
               {consumerConfig.curl}
             </pre>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            <ConfigBlock title="Streaming cURL" value={consumerConfig.streamCurl} />
+            <ConfigBlock title="Status cURL" value={consumerConfig.statusCurl} />
+            <ConfigBlock title="Models cURL" value={consumerConfig.modelsCurl} />
           </div>
         </div>
       ) : null}

@@ -12,19 +12,52 @@ export function buildConsumerConfig(input: {
   publicAppUrl: string;
   apiKey: string | null;
 }) {
+  const baseUrl = `${input.publicAppUrl}/api/gpt/v1`;
+  const apiKey = input.apiKey ?? "chatuos_...";
+  const model = "gpt-5.3-codex";
+
   return {
-    endpoint: `${input.publicAppUrl}/api/gpt/v1`,
+    endpoint: baseUrl,
     apiKey: input.apiKey ?? "Create an API key in Settings",
-    model: "gpt-5.3-codex",
+    model,
     env: [
-      `OPENAI_BASE_URL=${input.publicAppUrl}/api/gpt/v1`,
-      `OPENAI_API_KEY=${input.apiKey ?? "chatuos_..."}`,
+      `export OPENAI_BASE_URL=${baseUrl}`,
+      `export OPENAI_API_KEY=${apiKey}`,
+      `export CHATUOS_API_KEY=${apiKey}`,
+    ].join("\n"),
+    codexConfig: [
+      "# ~/.codex/config.toml",
+      `model = "${model}"`,
+      'model_provider = "chatuos"',
+      "",
+      "[model_providers.chatuos]",
+      'name = "ChatUOS"',
+      `base_url = "${baseUrl}"`,
+      'env_key = "CHATUOS_API_KEY"',
+      'wire_api = "responses"',
+      "",
+      "# Then run:",
+      `# CHATUOS_API_KEY="${apiKey}" codex -m ${model}`,
     ].join("\n"),
     curl: [
-      `curl ${input.publicAppUrl}/api/gpt/v1/responses \\`,
-      `  -H "Authorization: Bearer ${input.apiKey ?? "chatuos_..."}" \\`,
+      `curl ${baseUrl}/responses \\`,
+      `  -H "Authorization: Bearer ${apiKey}" \\`,
       `  -H "Content-Type: application/json" \\`,
-      `  -d '{"model":"gpt-5.3-codex","input":"Say hello"}'`,
+      `  -d '{"model":"${model}","input":"Say hello from ChatUOS"}'`,
+    ].join("\n"),
+    streamCurl: [
+      `curl -N ${baseUrl}/responses \\`,
+      `  -H "Authorization: Bearer ${apiKey}" \\`,
+      `  -H "Content-Type: application/json" \\`,
+      `  -d '{"model":"${model}","input":"Stream a mock Codex response","stream":true}'`,
+    ].join("\n"),
+    statusCurl: [
+      `curl ${baseUrl}/status \\`,
+      `  -H "Authorization: Bearer ${apiKey}"`,
+    ].join("\n"),
+    modelsCurl: [
+      `curl ${baseUrl}/models \\`,
+      `  -H "Authorization: Bearer ${apiKey}"`,
     ].join("\n"),
   };
 }

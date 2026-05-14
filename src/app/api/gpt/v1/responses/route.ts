@@ -2,6 +2,13 @@ import {
   apiKeyErrorResponse,
   authenticateBearerApiKey,
 } from "@/lib/api-keys";
+import {
+  createResponsesJson,
+  createResponsesStream,
+  parseResponsesInput,
+  readJsonBody,
+  streamResponse,
+} from "@/lib/mock-openai";
 import { getApiDb } from "@/lib/server-context";
 
 export async function POST(request: Request) {
@@ -12,13 +19,15 @@ export async function POST(request: Request) {
     return apiKeyErrorResponse(authResult);
   }
 
-  return Response.json(
-    {
-      error: "NOT_IMPLEMENTED",
-      message:
-        "The GPT routing gateway is scaffolded. Next step: enqueue this request and stream a contributor worker result.",
-      owner: authResult.key.userId,
-    },
-    { status: 501 },
-  );
+  const input = parseResponsesInput(await readJsonBody(request));
+  const context = {
+    apiKey: authResult.key,
+    endpoint: "responses" as const,
+  };
+
+  if (input.stream) {
+    return streamResponse(createResponsesStream(input, context));
+  }
+
+  return Response.json(createResponsesJson(input, context));
 }

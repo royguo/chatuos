@@ -569,8 +569,10 @@ src/components/dashboard/dashboard-tabs.tsx
 src/components/dashboard/api-key-manager.tsx
 src/app/api/api-keys/route.ts            # API key create/list
 src/app/api/api-keys/[id]/route.ts       # API key revoke
-src/app/api/gpt/v1/responses/route.ts    # GPT gateway scaffold
+src/app/api/gpt/v1/responses/route.ts    # OpenAI-compatible mock Responses API
 src/app/api/gpt/v1/chat/completions/route.ts
+src/app/api/gpt/v1/models/route.ts
+src/app/api/gpt/v1/status/route.ts
 src/app/api/worker/install/route.ts      # Worker installer script
 src/app/api/worker/poll/route.ts         # Worker polling scaffold
 src/app/api/worker/events/route.ts       # Worker event ingestion scaffold
@@ -620,7 +622,44 @@ API key 设计：
 - 所有变更进入 `ledger_entries`。
 - 当前骨架已包含 `wallets` 和 `ledger_entries` 表，结算逻辑后续接入 job 完成事件。
 
-## 14. Worker Installer 和多计划配置
+## 14. Consumer Mock API
+
+Consumer 侧当前提供 OpenAI-compatible mock API，便于在真实 worker 调度接入前验证
+Codex CLI、OpenAI SDK 或普通 HTTP client 能否连通 ChatUOS。
+
+已实现入口：
+
+```text
+GET  /api/gpt/v1/models
+GET  /api/gpt/v1/status
+POST /api/gpt/v1/responses
+POST /api/gpt/v1/chat/completions
+```
+
+当前行为：
+
+- 所有入口使用 `Authorization: Bearer <chatuos-api-key>` 鉴权。
+- `responses` 支持 `model`、`input`、`stream`。
+- `chat/completions` 支持 `model`、`messages`、`stream`。
+- 非流式请求返回 mock JSON。
+- 流式请求返回 SSE，逐段回显用户请求内容。
+- `status` 返回当前用户剩余 credits。
+- 目前不扣减 credits，后续接入真实 worker job 完成事件后再做结算。
+
+Codex CLI 配置模板：
+
+```toml
+model = "gpt-5.3-codex"
+model_provider = "chatuos"
+
+[model_providers.chatuos]
+name = "ChatUOS"
+base_url = "https://chatuos.com/api/gpt/v1"
+env_key = "CHATUOS_API_KEY"
+wire_api = "responses"
+```
+
+## 15. Worker Installer 和多计划配置
 
 贡献者卡片提供一键安装脚本：
 
@@ -684,7 +723,7 @@ worker -> POST /api/worker/events
 - 更强隔离时，建议一个 OS user 跑一个 worker 进程。
 - 平台侧后续可按 plan、worker、健康状态和积分收益进行调度。
 
-## 15. Cloudflare 配置原则
+## 16. Cloudflare 配置原则
 
 当前骨架采用：
 
@@ -721,7 +760,7 @@ npm run db:migrate:remote
 npm run deploy
 ```
 
-## 16. 当前 MVP 边界
+## 17. 当前 MVP 边界
 
 已初始化：
 
@@ -731,7 +770,7 @@ npm run deploy
 - Consumer/Contributor/Settings 三卡片切换。
 - API key 创建、列出、撤销接口。
 - wallet 初始积分结构。
-- GPT gateway route scaffold。
+- Consumer mock Responses/Chat/Models/Status API。
 - worker poll/event route scaffold。
 - worker profile check-in 持久化和 active profiles 展示。
 - Python worker scaffold。
@@ -747,7 +786,7 @@ npm run deploy
 - worker profile 健康状态过期、心跳超时和下线检测。
 - consumer 请求的模型路由、熔断和重试。
 
-## 17. 参考资料
+## 18. 参考资料
 
 - OpenAI Codex CLI reference: https://developers.openai.com/codex/cli/reference
 - Codex non-interactive mode: https://developers.openai.com/codex/noninteractive
