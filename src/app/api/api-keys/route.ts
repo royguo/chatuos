@@ -25,12 +25,11 @@ export async function POST(request: Request) {
 
   const payload =
     body && typeof body === "object"
-      ? (body as { name?: unknown; purpose?: unknown })
+      ? (body as { name?: unknown })
       : {};
   const result = await createUserApiKey(context.db, {
     userId: context.userId,
     name: payload.name,
-    purpose: payload.purpose,
   });
 
   return Response.json(result, { status: 201 });

@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { auth } from "@/auth";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+import { getAppEnv, isAuthConfigured } from "@/lib/auth/env";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,11 +10,16 @@ export const metadata: Metadata = {
   description: "A Codex and GPT capacity sharing dashboard.",
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const env = await getAppEnv();
+  const session = isAuthConfigured(env) ? await auth() : null;
+
   return (
     <html lang="en">
       <body>
@@ -25,9 +33,13 @@ export default function RootLayout({
                 <Link href="/dashboard" className="hover:text-foreground">
                   Dashboard
                 </Link>
-                <Link href="/login" className="hover:text-foreground">
-                  Sign in
-                </Link>
+                {session?.user ? (
+                  <SignOutButton />
+                ) : (
+                  <Link href="/login" className="hover:text-foreground">
+                    Sign in
+                  </Link>
+                )}
               </nav>
             </div>
           </header>

@@ -548,9 +548,9 @@ Dashboard 分为三个卡片/视图：
 
 2. Contributor
    - 展示贡献者 worker 配置。
-   - 展示用户 ID、平台 endpoint、worker key、worker 启动命令。
-   - 提供下载 worker bootstrap 配置的入口。
-   - worker 下载后，用户可以在本地 `plans.json` 中配置一个或多个 Codex 账户共享计划。
+   - 展示 active profiles、用户 ID、平台 endpoint、worker key、安装脚本、配置文件和 worker 启动命令。
+   - 提供一键 worker installer 脚本。
+   - 用户可以在本地 `plans.json` 中配置一个或多个 Codex 账户共享计划。
 
 3. Settings
    - 显示唯一用户 ID。
@@ -571,9 +571,10 @@ src/app/api/api-keys/route.ts            # API key create/list
 src/app/api/api-keys/[id]/route.ts       # API key revoke
 src/app/api/gpt/v1/responses/route.ts    # GPT gateway scaffold
 src/app/api/gpt/v1/chat/completions/route.ts
-src/app/api/worker/bootstrap/route.ts    # Personalized worker bootstrap download
+src/app/api/worker/install/route.ts      # Worker installer script
 src/app/api/worker/poll/route.ts         # Worker polling scaffold
 src/app/api/worker/events/route.ts       # Worker event ingestion scaffold
+src/lib/worker-profiles.ts               # Active worker profile tracking
 worker/                                 # Python contributor worker
 ```
 
@@ -607,8 +608,8 @@ API key 设计：
 
 - key 明文只在创建时展示一次。
 - 数据库只保存 SHA-256 hash 和可见 prefix。
-- key purpose 支持 `consumer`、`contributor`、`both`。
-- Consumer 和 Contributor Worker 均使用 `Authorization: Bearer <key>`。
+- key 默认统一可用，不在控制台暴露 purpose 选择。
+- Consumer 和 Contributor worker 均使用 `Authorization: Bearer <key>`。
 
 积分设计：
 
@@ -618,20 +619,30 @@ API key 设计：
 - 所有变更进入 `ledger_entries`。
 - 当前骨架已包含 `wallets` 和 `ledger_entries` 表，结算逻辑后续接入 job 完成事件。
 
-## 14. Worker Download 和多计划配置
+## 14. Worker Installer 和多计划配置
 
-贡献者卡片提供下载 worker bootstrap 的入口：
+贡献者卡片提供一键安装脚本：
 
 ```text
-GET /api/worker/bootstrap
+curl -fsSL https://chatuos.com/api/worker/install | env \
+  CHATUOS_USER_ID="<dashboard-user-id>" \
+  CHATUOS_WORKER_KEY="<full-api-key>" \
+  bash
 ```
 
-该接口基于当前 GitHub 登录用户生成 shell bootstrap：
+该脚本通过公开 installer 接口获取：
+
+```text
+GET /api/worker/install
+```
+
+installer 会：
 
 - 写入平台 endpoint。
-- 写入用户 ID。
+- 写入用户 ID 和 API key。
 - 生成 `plans.json` 模板。
-- 提示用户通过 `CHATUOS_WORKER_KEY` 注入完整 API key。
+- 安装 `worker/` Python 包。
+- 提示 worker 启动命令。
 
 本地 worker 使用 Python，目录：
 
@@ -721,6 +732,7 @@ npm run deploy
 - wallet 初始积分结构。
 - GPT gateway route scaffold。
 - worker poll/event route scaffold。
+- worker profile check-in 持久化和 active profiles 展示。
 - Python worker scaffold。
 - D1 初始 migration。
 
@@ -731,7 +743,7 @@ npm run deploy
 - SSE 事件从 worker 到 consumer 的实时桥接。
 - credits 的真实扣减和奖励。
 - 充值支付。
-- worker plan 的服务端持久化和健康检查。
+- worker profile 健康状态过期、心跳超时和下线检测。
 - consumer 请求的模型路由、熔断和重试。
 
 ## 17. 参考资料

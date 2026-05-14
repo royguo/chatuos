@@ -9,7 +9,7 @@ const highlights = [
   },
   {
     title: "Contributor Worker",
-    description: "Download a personalized worker config and run one or more local Codex plans.",
+    description: "Run the worker installer and share one or more local Codex profiles.",
     icon: GitBranch,
   },
   {
@@ -30,9 +30,9 @@ export default function Home() {
           Shared Codex capacity with local contributor workers.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
-          Sign in with GitHub, copy your consumer configuration, or download a
-          local Python worker to contribute Codex execution capacity from your
-          own environment.
+          Sign in with GitHub, copy your consumer configuration, or install a
+          local Python worker to contribute Codex execution capacity from your own
+          environment.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/login" className="btn-primary">

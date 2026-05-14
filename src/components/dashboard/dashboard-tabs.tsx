@@ -2,20 +2,23 @@
 
 import { useMemo, useState } from "react";
 import {
+  Activity,
   Code2,
-  Download,
+  FileJson,
   KeyRound,
   ServerCog,
   Settings,
+  Terminal,
   User,
   WalletCards,
 } from "lucide-react";
 import type { ApiKeyListItem } from "@/lib/api-keys";
+import type { WorkerProfileListItem } from "@/lib/worker-profiles";
 import {
   buildConsumerConfig,
   buildWorkerConfig,
 } from "@/lib/dashboard";
-import { formatCredits } from "@/lib/utils";
+import { formatCredits, formatDateTime } from "@/lib/utils";
 import { ApiKeyManager } from "./api-key-manager";
 import { CopyButton } from "./copy-button";
 
@@ -29,6 +32,7 @@ type DashboardTabsProps = {
   publicAppUrl: string;
   credits: number;
   apiKeys: ApiKeyListItem[];
+  workerProfiles: WorkerProfileListItem[];
 };
 
 type TabId = "consumer" | "contributor" | "settings";
@@ -52,9 +56,64 @@ function ConfigBlock({
         <p className="text-xs uppercase text-muted-light">{title}</p>
         <CopyButton value={value} />
       </div>
-      <code className="mt-3 block break-all font-mono text-sm leading-6 text-foreground">
+      <pre className="mt-3 whitespace-pre-wrap break-words font-mono text-sm leading-6 text-foreground">
         {value}
-      </code>
+      </pre>
+    </div>
+  );
+}
+
+function ActiveProfiles({ profiles }: { profiles: WorkerProfileListItem[] }) {
+  return (
+    <div className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div>
+        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Activity className="h-4 w-4 text-accent" />
+          Active profiles
+        </div>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+          Worker profiles appear here after a contributor worker polls the platform.
+        </p>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-border">
+        {profiles.length === 0 ? (
+          <div className="px-4 py-6 text-sm text-muted">
+            No worker profiles have checked in yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-border text-left text-sm">
+              <thead className="bg-background text-xs uppercase text-muted-light">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Profile</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Max concurrency</th>
+                  <th className="px-4 py-3 font-medium">Worker key</th>
+                  <th className="px-4 py-3 font-medium">Last request</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {profiles.map((profile) => (
+                  <tr key={profile.id}>
+                    <td className="px-4 py-3 font-medium text-foreground">
+                      {profile.name}
+                    </td>
+                    <td className="px-4 py-3 text-muted">{profile.status}</td>
+                    <td className="px-4 py-3 text-muted">{profile.maxConcurrency}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-muted">
+                      {profile.workerKeyPrefix}...
+                    </td>
+                    <td className="px-4 py-3 text-muted">
+                      {formatDateTime(profile.lastSeenAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -64,6 +123,7 @@ export function DashboardTabs({
   publicAppUrl,
   credits,
   apiKeys,
+  workerProfiles,
 }: DashboardTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("consumer");
   const activeKey = apiKeys.find((key) => key.status === "active");
@@ -85,7 +145,7 @@ export function DashboardTabs({
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col gap-4 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-5 border-b border-border pb-6">
         <div>
           <p className="text-sm uppercase tracking-[0.18em] text-muted-light">
             Dashboard
@@ -97,7 +157,7 @@ export function DashboardTabs({
             Switch between consumer setup, contributor worker plans, and account settings.
           </p>
         </div>
-        <div className="inline-flex rounded-xl border border-border bg-card p-1">
+        <div className="inline-flex self-start rounded-xl border border-border bg-card p-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -164,37 +224,59 @@ export function DashboardTabs({
       ) : null}
 
       {activeTab === "contributor" ? (
-        <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="space-y-5">
+          <ActiveProfiles profiles={workerProfiles} />
+
+          <div className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <ServerCog className="h-4 w-4 text-accent" />
                 Contributor worker
               </div>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-                Download a personalized bootstrap script, then run the Python worker
-                with one or more local Codex account plans.
+                Install the Python worker, configure one API key, then add one or
+                more local Codex profiles with separate Codex homes.
               </p>
             </div>
-            <a href="/api/worker/bootstrap" className="btn-primary text-sm">
-              <Download className="h-4 w-4" />
-              Download worker config
-            </a>
-          </div>
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            <ConfigBlock title="Platform endpoint" value={workerConfig.endpoint} />
-            <ConfigBlock title="User ID" value={workerConfig.userId} />
-            <ConfigBlock title="Worker key" value={workerConfig.apiKey} />
-            <ConfigBlock title="Worker command" value={workerConfig.command} />
-          </div>
+            <div className="space-y-4">
+              <ConfigBlock title="Platform endpoint" value={workerConfig.endpoint} />
+              <ConfigBlock title="User ID" value={workerConfig.userId} />
+              <ConfigBlock title="Worker key" value={workerConfig.apiKey} />
+              <div className="rounded-xl border border-border bg-background p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
+                    <Terminal className="h-4 w-4 text-accent" />
+                    Worker install
+                  </div>
+                  <CopyButton value={workerConfig.installCommand} />
+                </div>
+                <pre className="mt-3 whitespace-pre-wrap break-words font-mono text-sm leading-6 text-foreground">
+                  {workerConfig.installCommand}
+                </pre>
+              </div>
+              <div className="rounded-xl border border-border bg-background p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
+                    <FileJson className="h-4 w-4 text-accent" />
+                    Worker config file
+                  </div>
+                  <CopyButton value={workerConfig.configJson} />
+                </div>
+                <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-foreground">
+                  {workerConfig.configJson}
+                </pre>
+              </div>
+              <ConfigBlock title="Worker command" value={workerConfig.command} />
+            </div>
 
-          <div className="rounded-xl border border-border bg-background p-4">
-            <p className="text-sm font-medium text-foreground">Account sharing plans</p>
-            <p className="mt-2 text-sm leading-6 text-muted">
-              A single worker can load multiple local plans from `plans.json`, each with
-              its own `CODEX_HOME`, model, workspace root, and concurrency cap.
-            </p>
+            <div className="rounded-xl border border-border bg-background p-4">
+              <p className="text-sm font-medium text-foreground">Codex profiles</p>
+              <p className="mt-2 text-sm leading-6 text-muted">
+                Each profile maps to one local Codex account by using a separate
+                `codex_home`. All profiles share the same ChatUOS API key and user id.
+              </p>
+            </div>
           </div>
         </div>
       ) : null}

@@ -23,8 +23,8 @@ async function readError(response: Response) {
 export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }) {
   const [keys, setKeys] = useState(initialKeys);
   const [name, setName] = useState("Default access key");
-  const [purpose, setPurpose] = useState("both");
   const [createdKey, setCreatedKey] = useState<string | null>(null);
+  const [revealedKeys, setRevealedKeys] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }
       const response = await fetch("/api/api-keys", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, purpose }),
+        body: JSON.stringify({ name }),
       });
 
       if (!response.ok) {
@@ -47,6 +47,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }
       const data = (await response.json()) as CreateKeyResponse;
       setKeys((current) => [data.item, ...current]);
       setCreatedKey(data.key);
+      setRevealedKeys((current) => ({ ...current, [data.item.id]: data.key }));
     } catch (createError) {
       setError(createError instanceof Error ? createError.message : "Unable to create key.");
     } finally {
@@ -91,22 +92,13 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }
         </div>
       </div>
 
-      <form onSubmit={createKey} className="mt-5 grid gap-3 md:grid-cols-[1fr_160px_auto]">
+      <form onSubmit={createKey} className="mt-5 grid gap-3 md:grid-cols-[1fr_auto]">
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-accent"
           placeholder="Key name"
         />
-        <select
-          value={purpose}
-          onChange={(event) => setPurpose(event.target.value)}
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm outline-none focus:border-accent"
-        >
-          <option value="both">Consumer + Worker</option>
-          <option value="consumer">Consumer only</option>
-          <option value="contributor">Worker only</option>
-        </select>
         <button
           type="submit"
           disabled={busy}
@@ -147,7 +139,6 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }
                 <tr>
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">Prefix</th>
-                  <th className="px-4 py-3 font-medium">Purpose</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Created</th>
                   <th className="px-4 py-3 font-medium">Last used</th>
@@ -155,27 +146,36 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKeyListItem[] }
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {keys.map((key) => (
-                  <tr key={key.id}>
-                    <td className="px-4 py-3 text-foreground">{key.name}</td>
-                    <td className="px-4 py-3 font-mono text-xs">{key.keyPrefix}...</td>
-                    <td className="px-4 py-3 text-muted">{key.purpose}</td>
-                    <td className="px-4 py-3 text-muted">{key.status}</td>
-                    <td className="px-4 py-3 text-muted">{formatDateTime(key.createdAt)}</td>
-                    <td className="px-4 py-3 text-muted">{formatDateTime(key.lastUsedAt)}</td>
-                    <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        disabled={key.status !== "active"}
-                        onClick={() => void revokeKey(key.id)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs text-muted transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Revoke
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {keys.map((key) => {
+                  const revealedKey = revealedKeys[key.id];
+
+                  return (
+                    <tr key={key.id}>
+                      <td className="px-4 py-3 text-foreground">{key.name}</td>
+                      <td className="px-4 py-3 font-mono text-xs">{key.keyPrefix}...</td>
+                      <td className="px-4 py-3 text-muted">{key.status}</td>
+                      <td className="px-4 py-3 text-muted">{formatDateTime(key.createdAt)}</td>
+                      <td className="px-4 py-3 text-muted">{formatDateTime(key.lastUsedAt)}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <CopyButton
+                            value={revealedKey ?? key.keyPrefix}
+                            label={revealedKey ? "Copy" : "Copy prefix"}
+                          />
+                          <button
+                            type="button"
+                            disabled={key.status !== "active"}
+                            onClick={() => void revokeKey(key.id)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs text-muted transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Revoke
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
