@@ -79,27 +79,31 @@ function WorkerStepBlock({
   compact?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-background p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
-            <Icon className="h-4 w-4 text-accent" />
-            {step}
-          </div>
-          <p className="mt-2 text-sm font-medium text-foreground">{title}</p>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
-            {description}
-          </p>
+    <div className="space-y-3">
+      <div>
+        <div className="flex items-center gap-2 text-xs uppercase text-muted-light">
+          <Icon className="h-4 w-4 text-accent" />
+          {step}
         </div>
-        <CopyButton value={value} />
+        <p className="mt-2 text-sm font-medium text-foreground">{title}</p>
+        <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
+          {description}
+        </p>
       </div>
-      <pre
-        className={`mt-3 whitespace-pre-wrap break-words font-mono leading-6 text-foreground ${
-          compact ? "text-xs" : "text-sm"
-        }`}
-      >
-        {value}
-      </pre>
+
+      <div className="rounded-xl border border-border bg-background p-4">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs uppercase text-muted-light">{title}</p>
+          <CopyButton value={value} />
+        </div>
+        <pre
+          className={`mt-3 whitespace-pre-wrap break-words font-mono leading-6 text-foreground ${
+            compact ? "text-xs" : "text-sm"
+          }`}
+        >
+          {value}
+        </pre>
+      </div>
     </div>
   );
 }
