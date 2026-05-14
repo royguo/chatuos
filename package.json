@@ -10,8 +10,10 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply gpt-proxy-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply gpt-proxy-db --remote",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy --keep-vars",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:deploy": "wrangler deploy --keep-vars --experimental-autoconfig=false",
+    "preview": "npm run cf:build && opennextjs-cloudflare preview",
+    "deploy": "npm run cf:build && npm run cf:deploy",
     "upload": "opennextjs-cloudflare build && wrangler versions upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv src/cloudflare-env.d.ts"
   },

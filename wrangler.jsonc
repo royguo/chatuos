@@ -5,10 +5,6 @@
   "keep_vars": true,
   "compatibility_date": "2026-05-14",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  "vars": {
-    "AUTH_URL": "http://localhost:3000",
-    "PUBLIC_APP_URL": "http://localhost:3000"
-  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
