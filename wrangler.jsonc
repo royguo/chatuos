@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gpt-proxy",
+  "main": ".open-next/worker.js",
+  "keep_vars": true,
+  "compatibility_date": "2026-05-14",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "vars": {
+    "AUTH_URL": "http://localhost:3000",
+    "PUBLIC_APP_URL": "http://localhost:3000"
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gpt-proxy-db",
+      "database_id": "replace-with-cloudflare-d1-database-id"
+    }
+  ]
+}

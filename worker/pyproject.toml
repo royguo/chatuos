@@ -1,0 +1,9 @@
+[project]
+name = "gpt-proxy-worker"
+version = "0.1.0"
+description = "Contributor-side Codex worker for GPT Proxy"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+gpt-proxy-worker = "codex_share_worker.__main__:main"

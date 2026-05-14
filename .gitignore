@@ -1,0 +1,12 @@
+.env
+.env.local
+.env.*.local
+.next
+.open-next
+.wrangler
+node_modules
+dist
+__pycache__
+*.pyc
+.venv
+.DS_Store

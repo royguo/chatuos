@@ -1,0 +1,14 @@
+{
+  "endpoint": "http://localhost:3000",
+  "user_id": "paste-user-id-here",
+  "worker_key": "paste-full-api-key-here",
+  "plans": [
+    {
+      "name": "default-codex-plan",
+      "model": "gpt-5.3-codex",
+      "codex_home": "~/.codex",
+      "workspace_root": "~/.gpt-proxy/jobs",
+      "max_concurrency": 1
+    }
+  ]
+}
