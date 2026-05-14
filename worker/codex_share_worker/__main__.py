@@ -10,7 +10,7 @@ from .config import WorkerConfig, load_config
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="GPT Proxy contributor worker")
+    parser = argparse.ArgumentParser(description="ChatUOS contributor worker")
     parser.add_argument("--plans", default="plans.json", help="Path to plans JSON")
     parser.add_argument("--endpoint", help="Override platform endpoint")
     parser.add_argument("--worker-key", help="Override worker API key")

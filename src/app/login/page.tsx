@@ -31,7 +31,7 @@ export default async function LoginPage() {
           <p className="text-sm uppercase tracking-[0.18em] text-muted-light">
             GitHub login
           </p>
-          <h1 className="mt-3 font-sans text-3xl font-bold">Sign in to GPT Proxy</h1>
+          <h1 className="mt-3 font-sans text-3xl font-bold">Sign in to ChatUOS</h1>
           <p className="mt-3 text-sm leading-6 text-muted">
             Use your GitHub account to manage consumer keys, contributor workers,
             and credit balance.

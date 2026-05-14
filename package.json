@@ -1,5 +1,5 @@
 {
-  "name": "gpt-proxy",
+  "name": "chatuos",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply gpt-proxy-db --local",
-    "db:migrate:remote": "wrangler d1 migrations apply gpt-proxy-db --remote",
+    "db:migrate:local": "wrangler d1 migrations apply chatuos-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply chatuos-db --remote",
     "cf:build": "opennextjs-cloudflare build",
     "cf:deploy": "wrangler deploy --keep-vars --experimental-autoconfig=false",
     "preview": "npm run cf:build && opennextjs-cloudflare preview",

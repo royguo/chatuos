@@ -13,7 +13,7 @@ export async function GET() {
   const script = `#!/usr/bin/env bash
 set -euo pipefail
 
-echo "GPT Proxy contributor worker bootstrap"
+echo "ChatUOS contributor worker bootstrap"
 echo "User ID: ${context.userId}"
 echo "Endpoint: ${endpoint}"
 
@@ -21,13 +21,13 @@ cat > plans.json <<'JSON'
 {
   "endpoint": "${endpoint}",
   "user_id": "${context.userId}",
-  "worker_key": "\${GPT_PROXY_WORKER_KEY:-paste-your-full-api-key-here}",
+  "worker_key": "\${CHATUOS_WORKER_KEY:-paste-your-full-api-key-here}",
   "plans": [
     {
       "name": "default-codex-plan",
       "model": "gpt-5.3-codex",
       "codex_home": "~/.codex",
-      "workspace_root": "~/.gpt-proxy/jobs",
+      "workspace_root": "~/.chatuos/jobs",
       "max_concurrency": 1
     }
   ]
@@ -36,14 +36,14 @@ JSON
 
 echo
 echo "Created plans.json."
-echo "Set GPT_PROXY_WORKER_KEY to your full API key before running the Python worker."
+echo "Set CHATUOS_WORKER_KEY to your full API key before running the Python worker."
 echo "Visible key prefix from dashboard: ${firstKey?.keyPrefix ?? "no-key-created-yet"}"
 `;
 
   return new Response(script, {
     headers: {
       "content-type": "text/x-shellscript; charset=utf-8",
-      "content-disposition": 'attachment; filename="gpt-proxy-worker-bootstrap.sh"',
+      "content-disposition": 'attachment; filename="chatuos-worker-bootstrap.sh"',
     },
   });
 }

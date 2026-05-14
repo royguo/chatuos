@@ -18,11 +18,11 @@ export function buildConsumerConfig(input: {
     model: "gpt-5.3-codex",
     env: [
       `OPENAI_BASE_URL=${input.publicAppUrl}/api/gpt/v1`,
-      `OPENAI_API_KEY=${input.apiKey ?? "gsp_..."}`,
+      `OPENAI_API_KEY=${input.apiKey ?? "chatuos_..."}`,
     ].join("\n"),
     curl: [
       `curl ${input.publicAppUrl}/api/gpt/v1/responses \\`,
-      `  -H "Authorization: Bearer ${input.apiKey ?? "gsp_..."}" \\`,
+      `  -H "Authorization: Bearer ${input.apiKey ?? "chatuos_..."}" \\`,
       `  -H "Content-Type: application/json" \\`,
       `  -d '{"model":"gpt-5.3-codex","input":"Say hello"}'`,
     ].join("\n"),
@@ -41,7 +41,7 @@ export function buildWorkerConfig(input: {
     command: [
       "python -m codex_share_worker \\",
       `  --endpoint ${input.publicAppUrl} \\`,
-      `  --worker-key ${input.apiKey ?? "gsp_..."} \\`,
+      `  --worker-key ${input.apiKey ?? "chatuos_..."} \\`,
       "  --plans ./plans.json",
     ].join("\n"),
   };

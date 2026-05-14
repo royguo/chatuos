@@ -24,7 +24,7 @@ class PlatformClient:
             headers={
                 "Authorization": f"Bearer {self.worker_key}",
                 "Content-Type": "application/json",
-                "User-Agent": "gpt-proxy-worker/0.1.0",
+                "User-Agent": "chatuos-worker/0.1.0",
             },
             method="POST",
         )

@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "gpt-proxy",
+  "name": "chatuos",
   "main": ".open-next/worker.js",
   "keep_vars": true,
   "compatibility_date": "2026-05-14",
@@ -16,8 +16,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "gpt-proxy-db",
-      "database_id": "replace-with-cloudflare-d1-database-id"
+      "database_name": "chatuos-db",
+      "database_id": "87958658-67ae-4b69-9548-7aaf5444f030"
     }
   ]
 }

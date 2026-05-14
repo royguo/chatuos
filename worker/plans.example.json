@@ -7,7 +7,7 @@
       "name": "default-codex-plan",
       "model": "gpt-5.3-codex",
       "codex_home": "~/.codex",
-      "workspace_root": "~/.gpt-proxy/jobs",
+      "workspace_root": "~/.chatuos/jobs",
       "max_concurrency": 1
     }
   ]

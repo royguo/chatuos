@@ -631,7 +631,7 @@ GET /api/worker/bootstrap
 - 写入平台 endpoint。
 - 写入用户 ID。
 - 生成 `plans.json` 模板。
-- 提示用户通过 `GPT_PROXY_WORKER_KEY` 注入完整 API key。
+- 提示用户通过 `CHATUOS_WORKER_KEY` 注入完整 API key。
 
 本地 worker 使用 Python，目录：
 
@@ -660,7 +660,7 @@ worker -> POST /api/worker/events
   "name": "default-codex-plan",
   "model": "gpt-5.3-codex",
   "codex_home": "~/.codex",
-  "workspace_root": "~/.gpt-proxy/jobs",
+  "workspace_root": "~/.chatuos/jobs",
   "max_concurrency": 1
 }
 ```

@@ -1,4 +1,4 @@
-# GPT Proxy
+# ChatUOS
 
 Cloudflare-hosted MVP for a Codex/GPT capacity sharing platform.
 

@@ -2,7 +2,7 @@ import { and, desc, eq } from "drizzle-orm";
 import type { Database } from "@/lib/db";
 import { apiKeys } from "@/lib/db/schema";
 
-const KEY_PREFIX = "gsp";
+const KEY_PREFIX = "chatuos";
 const KEY_VISIBLE_PREFIX_LENGTH = 18;
 const DEFAULT_KEY_NAME = "Default access key";
 const MAX_KEY_NAME_LENGTH = 64;

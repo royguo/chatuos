@@ -1,4 +1,4 @@
-# GPT Proxy Python Worker
+# ChatUOS Python Worker
 
 This worker runs on a contributor machine. It polls the platform for jobs,
 executes Codex locally, and reports structured events back to the platform.
@@ -11,7 +11,7 @@ HTTP polling for the MVP. A WebSocket transport can be added later.
 ```bash
 python -m codex_share_worker \
   --endpoint https://your-platform.example \
-  --worker-key gsp_your_full_key \
+  --worker-key chatuos_your_full_key \
   --plans ./plans.example.json
 ```
 
@@ -24,13 +24,13 @@ The worker never uploads Codex credentials. Each plan chooses a local
 {
   "endpoint": "https://your-platform.example",
   "user_id": "user_id_from_dashboard",
-  "worker_key": "gsp_your_full_key",
+  "worker_key": "chatuos_your_full_key",
   "plans": [
     {
       "name": "default-codex-plan",
       "model": "gpt-5.3-codex",
       "codex_home": "~/.codex",
-      "workspace_root": "~/.gpt-proxy/jobs",
+      "workspace_root": "~/.chatuos/jobs",
       "max_concurrency": 1
     }
   ]
