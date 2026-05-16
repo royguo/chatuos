@@ -70,6 +70,7 @@ function WorkerStepBlock({
   description,
   value,
   compact = false,
+  highlightToken,
 }: {
   step: string;
   icon: typeof User;
@@ -77,7 +78,10 @@ function WorkerStepBlock({
   description: string;
   value: string;
   compact?: boolean;
+  highlightToken?: string;
 }) {
+  const parts = highlightToken ? value.split(highlightToken) : [value];
+
   return (
     <div className="space-y-3">
       <div>
@@ -101,7 +105,18 @@ function WorkerStepBlock({
             compact ? "text-xs" : "text-sm"
           }`}
         >
-          {value}
+          {highlightToken
+            ? parts.map((part, index) => (
+                <span key={`${part}-${index}`}>
+                  {part}
+                  {index < parts.length - 1 ? (
+                    <strong className="rounded bg-red-500/10 px-1 font-bold text-red-600 dark:text-red-300">
+                      {highlightToken}
+                    </strong>
+                  ) : null}
+                </span>
+              ))
+            : value}
         </pre>
       </div>
     </div>
@@ -294,8 +309,9 @@ export function DashboardTabs({
                 step="Step 1"
                 icon={Terminal}
                 title="Worker install"
-                description="Run this once on the contributor machine. Replace paste-full-api-key with the full API key copied immediately after creation in Settings."
+                description="Run this once on the contributor machine. Replace paste-full-api-key with the full API key copied from Settings. Add CHATUOS_DRY_RUN=1 in the env block to validate without installing."
                 value={workerConfig.installCommand}
+                highlightToken="paste-full-api-key"
               />
               <WorkerStepBlock
                 step="Step 2"
