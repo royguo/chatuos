@@ -2,7 +2,7 @@
 name = "chatuos-worker"
 version = "0.1.0"
 description = "Contributor-side Codex worker for ChatUOS"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 dependencies = []
 
 [project.scripts]

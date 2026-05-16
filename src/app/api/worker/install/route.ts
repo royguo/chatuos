@@ -37,8 +37,8 @@ from __future__ import annotations
 
 import sys
 
-if sys.version_info < (3, 9):
-    print("ERROR: Python 3.9 or newer is required.", file=sys.stderr)
+if sys.version_info < (3, 8):
+    print("ERROR: Python 3.8 or newer is required.", file=sys.stderr)
     sys.exit(1)
 PY
 

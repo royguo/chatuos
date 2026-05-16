@@ -6,6 +6,8 @@ executes Codex locally, and reports structured events back to the platform.
 It intentionally keeps dependencies minimal and uses Python standard-library
 HTTP polling for the MVP. A WebSocket transport can be added later.
 
+Requires Python 3.8 or newer.
+
 ## Quick start
 
 ```bash

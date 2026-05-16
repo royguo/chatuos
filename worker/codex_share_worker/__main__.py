@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 import time
-from typing import Any
+from typing import Any, Dict
 
 from .client import PlatformClient
 from .codex_runner import CodexRunner
@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def find_plan(config: WorkerConfig, job: dict[str, Any]):
+def find_plan(config: WorkerConfig, job: Dict[str, Any]):
     requested = job.get("plan")
     if requested:
         for plan in config.plans:
@@ -56,7 +56,7 @@ def main() -> None:
                 plan = find_plan(config, job)
                 runner = CodexRunner(plan)
 
-                def emit(event: dict[str, Any]) -> None:
+                def emit(event: Dict[str, Any]) -> None:
                     client.send_event(job_id, event)
 
                 exit_code = runner.run(job, emit)

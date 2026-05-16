@@ -6,18 +6,18 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 
 from .config import WorkerPlan
 
-EventCallback = Callable[[dict[str, Any]], None]
+EventCallback = Callable[[Dict[str, Any]], None]
 
 
 class CodexRunner:
     def __init__(self, plan: WorkerPlan) -> None:
         self.plan = plan
 
-    def run(self, job: dict[str, Any], on_event: EventCallback) -> int:
+    def run(self, job: Dict[str, Any], on_event: EventCallback) -> int:
         job_id = str(job.get("job_id", f"local_{int(time.time())}"))
         prompt = str(job.get("prompt", ""))
         if not prompt:

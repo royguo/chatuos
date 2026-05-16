@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 
 @dataclass(frozen=True)
@@ -19,18 +19,18 @@ class WorkerPlan:
 class WorkerConfig:
     endpoint: str
     worker_key: str
-    user_id: str | None
-    plans: list[WorkerPlan]
+    user_id: Optional[str]
+    plans: List[WorkerPlan]
 
 
-def _read_string(data: dict[str, Any], key: str, default: str | None = None) -> str:
+def _read_string(data: Dict[str, Any], key: str, default: Optional[str] = None) -> str:
     value = data.get(key, default)
     if not isinstance(value, str) or not value:
         raise ValueError(f"Missing or invalid string field: {key}")
     return value
 
 
-def _read_optional_string(data: dict[str, Any], key: str) -> str | None:
+def _read_optional_string(data: Dict[str, Any], key: str) -> Optional[str]:
     value = data.get(key)
     if value is None:
         return None
@@ -43,7 +43,7 @@ def _expand_path(value: str) -> str:
     return str(Path(value).expanduser())
 
 
-def load_config(path: str, endpoint: str | None, worker_key: str | None) -> WorkerConfig:
+def load_config(path: str, endpoint: Optional[str], worker_key: Optional[str]) -> WorkerConfig:
     raw = json.loads(Path(path).expanduser().read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         raise ValueError("Config file must contain a JSON object")
@@ -52,7 +52,7 @@ def load_config(path: str, endpoint: str | None, worker_key: str | None) -> Work
     if not isinstance(plans_raw, list) or not plans_raw:
         raise ValueError("Config file must contain at least one plan")
 
-    plans: list[WorkerPlan] = []
+    plans: List[WorkerPlan] = []
     for item in plans_raw:
         if not isinstance(item, dict):
             raise ValueError("Each plan must be a JSON object")

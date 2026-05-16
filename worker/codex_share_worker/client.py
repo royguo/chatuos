@@ -5,7 +5,7 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import asdict
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 from .config import WorkerPlan
 
@@ -16,7 +16,7 @@ class PlatformClient:
         self.worker_key = worker_key
         self.timeout = timeout
 
-    def _post(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+    def _post(self, path: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         body = json.dumps(payload).encode("utf-8")
         request = urllib.request.Request(
             f"{self.endpoint}{path}",
@@ -38,7 +38,7 @@ class PlatformClient:
                 raise RuntimeError("Platform returned a non-object JSON response")
             return value
 
-    def poll(self, plans: list[WorkerPlan]) -> dict[str, Any] | None:
+    def poll(self, plans: List[WorkerPlan]) -> Optional[Dict[str, Any]]:
         payload = {
             "plans": [asdict(plan) for plan in plans],
         }
@@ -53,7 +53,7 @@ class PlatformClient:
 
         return None
 
-    def send_event(self, job_id: str, event: dict[str, Any]) -> None:
+    def send_event(self, job_id: str, event: Dict[str, Any]) -> None:
         self._post(
             "/api/worker/events",
             {
